@@ -1,3 +1,8 @@
+from random import randint
+import numpy as np
+import pandas as pd
+
+
 def cross_validation(data, k=10):
   outcomes = data.Outcome.value_counts().index # classes do problema
   class_data = [data[data.Outcome == outcome] for outcome in outcomes] # separação das instancias em classes
@@ -30,3 +35,24 @@ def cross_validation(data, k=10):
       if i != j:
         new_train_datas[i] = new_train_datas[i].append(folds[j], ignore_index=True)
   return (new_train_datas, new_test_datas)
+
+
+def bootstrap(data, k=5):
+  new_sets = []
+  for _ in range(k):
+    train_instances = []
+    test_instances = []
+    reg_index = {}
+    for _ in range(data.shape[0]):
+      index = randint(0, data.shape[0] - 1)
+      train_instances.append(data.iloc[index])
+      reg_index[index] = True
+    for index in range(data.shape[0]):
+      if not index in reg_index:
+        test_instances.append(data.iloc[index])
+    new_train = pd.DataFrame(train_instances)
+    new_test = pd.DataFrame(test_instances)
+    for new_data in [new_train, new_test]:
+      new_data.index = range(new_data.shape[0])
+    new_sets.append((new_train, new_test))
+  return new_sets
