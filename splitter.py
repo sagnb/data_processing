@@ -3,9 +3,9 @@ import numpy as np
 import pandas as pd
 
 
-def cross_validation(data, k=10):
-  outcomes = data.Outcome.value_counts().index # classes do problema
-  class_data = [data[data.Outcome == outcome] for outcome in outcomes] # separação das instancias em classes
+def cross_validation(data, column_target, k=10):
+  column_values = data[column_target].value_counts().index # classes do problema
+  class_data = [data[data[column_target] == valor] for valor in column_values] # separação das instancias em classes
   class_quant = [] # quantidade de cada classe para manter a proporção
   class_remainder = [] # resto da div
   for data in class_data:
